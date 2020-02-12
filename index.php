@@ -16,7 +16,7 @@
 
     // Instantiate App
     $app = AppFactory::create();
-    $app->setBasePath("/calvary_web_2");
+    $app->setBasePath("/calvary-web-2");
 
     // Add error middleware
     $app->addErrorMiddleware(true, true, true);
