@@ -26,7 +26,7 @@
             return $pdoConn;
         }
 
-        public function closeDBConn($pdoConn)
+        public function closeDBConn()
         {
             $pdoConn = null;
         }

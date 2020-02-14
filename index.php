@@ -5,10 +5,11 @@
     use Slim\Views\Twig;
     use Slim\Views\TwigMiddleware;
 
+    // autoloader
     require __DIR__ . '/vendor/autoload.php';
-
-    require_once __DIR__ . '/src/models/DBConn.php';
+    // models
     require_once __DIR__ . '/src/models/Login.php';
+    // views
 
     if(!isset($_SESSION)) {
         session_start();
@@ -29,32 +30,44 @@
 
     // Define named route
 
+    // ### default root 
     $app->get('/', function ($request, $response, $args) {
         $view = Twig::fromRequest($request);
-        return $view->render($response, 'login.twig');
-    })->setName('login');
 
+        // check login
+        if(!isset($_SESSION['userID'])) {
+            // display login page
+            return $view->render($response, 'login.twig');
+        } else {
+            // display main page
+            return $view->render($response, 'main.twig', ['username' => $_SESSION['userID']]);
+        }
+    })->setName('root');
+
+    // ### check login id
     $app->post('/logincheck', function ($request, $response, $args) {
         $view = Twig::fromRequest($request);
-        $db = new DBConn();
-        $conn = $db->getNewDBConn();
+
         $user = $_POST["userID"];
         $pw = $_POST["userPassword"];
         $loginCheck = false;
-        $loginCheck = Login::checkLogin($conn, $user, $pw);
-        $db->closeDBConn($conn);
+        $loginModel = new Login();
+        $loginCheck = $loginModel->checkLogin($user, $pw);
         if($loginCheck) {
             $_SESSION['userID'] = $user;
-            return $view->render($response, 'main.twig');
+            return $response->withHeader('Location', '/calvary-web-2/')->withStatus(302);
         } else {
-            return $view->render($response, 'logincheck.twig', ['id' => 'false', 'pw' => 'false']);
+            return $view->render($response, 'login_fail.twig');
         }
-        // return $view->render($response, 'logincheck.twig', ['id' => $loginCheck, 'pw' => $loginCheck]);
     })->setName('logincheck');
 
-    $app->get('/main', function ($request, $response, $args) {
+    // ### logout
+    $app->get('/logout', function ($request, $response, $args) {
         $view = Twig::fromRequest($request);
-        return $view->render($response, 'main.twig');
-    })->setName('main');
+        
+        session_unset();
+        session_destroy();
+        return $response->withHeader('Location', '/calvary-web-2/')->withStatus(302);
+    })->setName('logout');
 
     $app->run();
