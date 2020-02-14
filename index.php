@@ -40,7 +40,9 @@
             return $view->render($response, 'login.twig');
         } else {
             // display main page
-            return $view->render($response, 'main.twig', ['username' => $_SESSION['userID']]);
+
+            return $view->render($response, 'main.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+            // return $view->render($response, 'main.twig', ['username' => $_SESSION['userID']]);
         }
     })->setName('root');
 
@@ -64,10 +66,18 @@
     // ### logout
     $app->get('/logout', function ($request, $response, $args) {
         $view = Twig::fromRequest($request);
-        
+
         session_unset();
         session_destroy();
         return $response->withHeader('Location', '/calvary-web-2/')->withStatus(302);
     })->setName('logout');
+
+    // ### admin
+    // ### password update
+    $app->post('/admin/account/edit', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        return $view->render($response, 'password_edit.twig');
+    })->setName('admin_account_edit');
 
     $app->run();

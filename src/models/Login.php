@@ -5,6 +5,8 @@
     class Login
     {
         public $dbConn;
+        public $loginId;
+        public $loginName;
 
         function __construct()
         {
@@ -26,6 +28,8 @@
                 if(password_verify($pw, $row['user_pw'])) {
                     //correct password
                     $ret = true;
+                    $this->loginId = $id;
+                    $this->loginName = $this->getLoginName($id);
                 } else {
                     $ret = false;
                 }
@@ -33,6 +37,18 @@
 
             $this->dbConn->closeDBConn();
 
+            return $ret;
+        }
+
+        static function getLoginName($loginId) {
+            switch($loginId) {
+                case 'admin':
+                    $ret = "관리자";
+                    break;
+                default:
+                    $ret = '';
+                    break;
+            }
             return $ret;
         }
     }
