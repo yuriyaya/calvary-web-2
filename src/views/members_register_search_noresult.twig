@@ -1,0 +1,43 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+<div class="page-title bg-secondary text-white">대원 등록 수정</div>
+<form action="/calvary-web-2/members/register/search" method="post">
+    <table class="form-table">
+        <tr>
+            <td>아이디: </td>
+            <td><input type="text" class="form-control" placeholder="" id="member_id" name="member_id" value="{{ input_info.id }}"></td>
+        </tr>
+        <tr>
+            <td>이름: </td>
+            <td><input type="text" class="form-control" placeholder="" id="member_name" name="member_name" value="{{ input_info.name }}"></td>
+        </tr>
+        <tr>
+            <td>파트</td>
+            <td>
+                <select class="form-control" id="member_part" name="member_part">
+                    <option {% if input_info.part == '' %} selected {% endif %}></option>
+                    <option {% if input_info.part == '소프라노A' %} selected {% endif %}>소프라노A</option>
+                    <option {% if input_info.part == '소프라노B' %} selected {% endif %}>소프라노B</option>
+                    <option {% if input_info.part == '소프라노B+' %} selected {% endif %}>소프라노B+</option>
+                    <option {% if input_info.part == '알토A' %} selected {% endif %}>알토A</option>
+                    <option {% if input_info.part == '알토B' %} selected {% endif %}>알토B</option>
+                    <option {% if input_info.part == '테너' %} selected {% endif %}>테너</option>
+                    <option {% if input_info.part == '베이스' %} selected {% endif %}>베이스</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button type="submit" class="btn btn-primary" name="member_register_search">조회</button></td>
+        </tr>
+    </table>
+</form>
+<div class="alert alert-danger">
+    <strong>에러!</strong> 조회 결과가 없습니다. 다시 시도해 주세요.
+</div>
+{% endblock %}

@@ -13,13 +13,13 @@
 
     if(!isset($_SESSION)) {
         session_start();
-    }
-
+    }    
+    
     // Instantiate App
     $app = AppFactory::create();
     $app->setBasePath("/calvary-web-2");
 
-    // Add error middleware
+    // // Add error middleware
     $app->addErrorMiddleware(true, true, true);
 
     // Create Twig
@@ -41,7 +41,7 @@
         } else {
             // display main page
 
-            return $view->render($response, 'main.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+            return $view->render($response, 'home.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
             // return $view->render($response, 'main.twig', ['username' => $_SESSION['userID']]);
         }
     })->setName('root');
@@ -73,11 +73,41 @@
     })->setName('logout');
 
     // ### admin
-    // ### password update
-    $app->post('/admin/account/edit', function ($request, $response, $args) {
+    // ### member register
+    $app->get('/members/register', function ($request, $response, $args) {
         $view = Twig::fromRequest($request);
 
-        return $view->render($response, 'password_edit.twig');
-    })->setName('admin_account_edit');
+        return $view->render($response, 'members_register.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+    })->setName('members_register');
+
+    // ### member register search
+    $app->post('/members/register/search', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        $inputInfo['id'] = $_POST["member_id"];
+        $inputInfo['name'] = $_POST["member_name"];
+        $inputInfo['part'] = $_POST["member_part"];
+
+        require_once __DIR__ . '/src/models/Member.php';
+        require_once __DIR__ . '/src/models/Part.php';
+        require_once __DIR__ . '/src/models/ChurchStaff.php';
+        require_once __DIR__ . '/src/models/MemberState.php';
+        $memberModel = new Member();
+        $searchResult = $memberModel->getMemberSearchResult($inputInfo['id'], $inputInfo['name'], Part::getPartNumber($inputInfo['part']));
+
+        if(count($searchResult) > 0) {
+            //
+            for($rowIdx=0; $rowIdx<count($searchResult); $rowIdx++) {
+                $searchResult[$rowIdx]['part'] = Part::getPartName($searchResult[$rowIdx]['part']);
+                $searchResult[$rowIdx]['church_staff'] = ChurchStaff::getChurchStaffName($searchResult[$rowIdx]['church_staff']);
+                $searchResult[$rowIdx]['last_state'] = MemberState::getMemberStateName($searchResult[$rowIdx]['last_state']);
+            }
+
+            return $view->render($response, 'members_register_search.twig', ['input_info' => $inputInfo, 'search_result' => $searchResult, 'login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+        } else {
+            return $view->render($response, 'members_register_search_noresult.twig', ['input_info' => $inputInfo, 'search_result' => $searchResult, 'login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+        }
+        
+    })->setName('members_register_search');
 
     $app->run();

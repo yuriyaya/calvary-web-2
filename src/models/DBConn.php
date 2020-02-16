@@ -9,8 +9,7 @@
         private $user;
         private $password;
 
-        function __construct()
-        {
+        function __construct() {
             $dbSettingFile = __DIR__ . '/../../../db_config.json';
             $dbSettings = new DBSettings($dbSettingFile);
             $this->hostString = $dbSettings->getPDOHostString();
@@ -19,15 +18,13 @@
 
         }
 
-        public function getNewDBConn()
-        {
+        public function getNewDBConn() {
             
             $pdoConn = new PDO($this->hostString, $this->user, $this->password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
             return $pdoConn;
         }
 
-        public function closeDBConn()
-        {
+        public function closeDBConn() {
             $pdoConn = null;
         }
     }

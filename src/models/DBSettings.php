@@ -7,8 +7,7 @@ class DBSettings
     private $password;
     private $db;
 
-    function __construct($configFile)
-    {
+    function __construct($configFile) {
         $db_config_str = file_get_contents($configFile);
         $db_config = json_decode($db_config_str, true);
         if(array_key_exists('mysql', $db_config))
@@ -20,18 +19,15 @@ class DBSettings
         }
     }
 
-    public function getPDOHostString()
-    {
+    public function getPDOHostString() {
         return 'mysql:host='.$this->hostname.';dbname='.$this->db;
     }
 
-    public function getUser()
-    {
+    public function getUser() {
         return $this->user;
     }
 
-    public function getPassword()
-    {
+    public function getPassword() {
         return $this->password;
     }
 

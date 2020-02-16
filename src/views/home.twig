@@ -1,11 +1,7 @@
 {% extends 'main_layout.twig' %}
 
 {% block navibar %}
-    {% if login_id == 'admin' %}
-        {{ include('navibar.twig') }}
-    {% else %}
-        {{ include('navibar_default.twig') }}
-    {% endif %}
+    {{ include('navibar.twig') }}
 {% endblock %}
 
 {% block content %}

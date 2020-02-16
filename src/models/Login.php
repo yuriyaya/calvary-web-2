@@ -8,13 +8,11 @@
         public $loginId;
         public $loginName;
 
-        function __construct()
-        {
+        function __construct() {
             $this->dbConn = new DBConn();
         }
 
-        function checkLogin($id, $pw)
-        {
+        function checkLogin($id, $pw) {
             $ret = false;
 
             $conn = $this->dbConn->getNewDBConn();
