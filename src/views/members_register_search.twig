@@ -5,58 +5,58 @@
 {% endblock %}
 
 {% block content %}
-<div class="page-title bg-secondary text-white">대원 등록 수정</div>
-<form action="/calvary-web-2/members/register/search" method="post">
-    <table class="form-table">
-        <tr>
-            <td>아이디: </td>
-            <td><input type="text" class="form-control" placeholder="" id="member_id" name="member_id" value="{{ input_info.id }}"></td>
-        </tr>
-        <tr>
-            <td>이름: </td>
-            <td><input type="text" class="form-control" placeholder="" id="member_name" name="member_name" value="{{ input_info.name }}"></td>
-        </tr>
-        <tr>
-            <td>파트</td>
-            <td>
-                <select class="form-control" id="member_part" name="member_part">
-                    <option {% if input_info.part == '' %} selected {% endif %}></option>
-                    <option {% if input_info.part == '소프라노A' %} selected {% endif %}>소프라노A</option>
-                    <option {% if input_info.part == '소프라노B' %} selected {% endif %}>소프라노B</option>
-                    <option {% if input_info.part == '소프라노B+' %} selected {% endif %}>소프라노B+</option>
-                    <option {% if input_info.part == '알토A' %} selected {% endif %}>알토A</option>
-                    <option {% if input_info.part == '알토B' %} selected {% endif %}>알토B</option>
-                    <option {% if input_info.part == '테너' %} selected {% endif %}>테너</option>
-                    <option {% if input_info.part == '베이스' %} selected {% endif %}>베이스</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><button type="submit" class="btn btn-primary" name="member_register_search">조회</button></td>
-        </tr>
+    {{ include('member_register_title.twig') }}
+    <form action="/calvary-web-2/members/register/search" method="post">
+        <table class="form-table">
+            <tr>
+                <td>아이디: </td>
+                <td><input type="text" class="form-control" placeholder="" id="member_id" name="member_id" value="{{ input_info.id }}"></td>
+            </tr>
+            <tr>
+                <td>이름: </td>
+                <td><input type="text" class="form-control" placeholder="" id="member_name" name="member_name" value="{{ input_info.name }}"></td>
+            </tr>
+            <tr>
+                <td>파트</td>
+                <td>
+                    <select class="form-control" id="member_part" name="member_part">
+                        <option {% if input_info.part == '' %} selected {% endif %}></option>
+                        <option {% if input_info.part == '소프라노A' %} selected {% endif %}>소프라노A</option>
+                        <option {% if input_info.part == '소프라노B' %} selected {% endif %}>소프라노B</option>
+                        <option {% if input_info.part == '소프라노B+' %} selected {% endif %}>소프라노B+</option>
+                        <option {% if input_info.part == '알토A' %} selected {% endif %}>알토A</option>
+                        <option {% if input_info.part == '알토B' %} selected {% endif %}>알토B</option>
+                        <option {% if input_info.part == '테너' %} selected {% endif %}>테너</option>
+                        <option {% if input_info.part == '베이스' %} selected {% endif %}>베이스</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit" class="btn btn-primary" name="member_register_search">조회</button></td>
+            </tr>
+        </table>
+    </form>
+    <table class="member-search-result table table-bordered table-hover table-sm">
+        <thead class="thead-dark">
+            <th>ID</th>
+            <th>이름</th>
+            <th>파트</th>
+            <th>직분</th>
+            <th>상태</th>
+            <th></th>
+        </thead>
+        <tbody>
+        {% for row in search_result %}
+            <tr>
+                <td>{{ row.sn }}</td>
+                <td>{{ row.name }}</td>
+                <td>{{ row.part }}</td>
+                <td>{{ row.church_staff }}</td>
+                <td>{{ row.last_state }}</td>
+                <td><a class="btn btn-outline-primary btn-sm" href="/calvary-web-2/members/register/{{ row.sn }}" role="button">수정</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
     </table>
-</form>
-<table class="member-search-result table table-bordered table-hover table-sm">
-    <thead class="thead-dark">
-        <th>ID</th>
-        <th>이름</th>
-        <th>파트</th>
-        <th>직분</th>
-        <th>상태</th>
-        <th></th>
-    </thead>
-    <tbody>
-    {% for row in search_result %}
-        <tr>
-            <td>{{ row.sn }}</td>
-            <td>{{ row.name }}</td>
-            <td>{{ row.part }}</td>
-            <td>{{ row.church_staff }}</td>
-            <td>{{ row.last_state }}</td>
-            <td><a class="btn btn-outline-primary btn-sm" href="/calvary-web-2/members/register/{{ row.sn }}/edit" role="button">수정</a></td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
 {% endblock %}

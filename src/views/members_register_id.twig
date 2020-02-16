@@ -1,0 +1,62 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    {{ include('member_register_title.twig') }}
+    <form action="/calvary-web-2/members/register/{{ edit_info.sn }}/edit" method="post">
+        <table class="form-table">
+            <tr>
+                <td>아이디: </td>
+                <td><input type="text" class="form-control" placeholder="" id="member_id" name="member_id" value="{{ edit_info.sn }}" readonly></td>
+            </tr>
+            <tr>
+                <td>이름: </td>
+                <td><input type="text" class="form-control" placeholder="" id="member_name" name="member_name" value="{{ edit_info.name }}"></td>
+            </tr>
+            <tr>
+                <td>파트</td>
+                <td>
+                    <select class="form-control" id="member_part" name="member_part">
+                        <option {% if edit_info.part == '소프라노A' %} selected {% endif %}>소프라노A</option>
+                        <option {% if edit_info.part == '소프라노B' %} selected {% endif %}>소프라노B</option>
+                        <option {% if edit_info.part == '소프라노B+' %} selected {% endif %}>소프라노B+</option>
+                        <option {% if edit_info.part == '알토A' %} selected {% endif %}>알토A</option>
+                        <option {% if edit_info.part == '알토B' %} selected {% endif %}>알토B</option>
+                        <option {% if edit_info.part == '테너' %} selected {% endif %}>테너</option>
+                        <option {% if edit_info.part == '베이스' %} selected {% endif %}>베이스</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>직분: </td>
+                <td>
+                    <select class="form-control" id="member_church_staff" name="member_church_staff">
+                        <option {% if edit_info.church_staff == '성도' %} selected {% endif %}>성도</option>
+                        <option {% if edit_info.church_staff == '집사' %} selected {% endif %}>집사</option>
+                        <option {% if edit_info.church_staff == '안수집사' %} selected {% endif %}>안수집사</option>
+                        <option {% if edit_info.church_staff == '권사' %} selected {% endif %}>권사</option>
+                        <option {% if edit_info.church_staff == '장로' %} selected {% endif %}>장로</option>
+                        <option {% if edit_info.church_staff == '전도사' %} selected {% endif %}>전도사</option>
+                        <option {% if edit_info.church_staff == '목사' %} selected {% endif %}>목사</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>파트장 여부: </td>
+                <td>
+                    <select class="form-control" id="member_calvary_staff" name="member_calvary_staff">
+                        <option {% if edit_info.calvary_staff == '대원' %} selected {% endif %}>대원</option>
+                        <option {% if edit_info.calvary_staff == '파트장' %} selected {% endif %}>파트장</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit" class="btn btn-primary" name="member_register_edit">수정</button></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

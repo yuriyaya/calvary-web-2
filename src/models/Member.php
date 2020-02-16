@@ -26,25 +26,25 @@
 
             switch($flag) {
                 case 1:
-                    $querySearch = ' WHERE sn='.$id;
+                    $querySearch = " WHERE sn=".$id;
                 break;
                 case 2:
-                    $querySearch = ' WHERE name="'.$name.'"';
+                    $querySearch = " WHERE name='".$name."'";
                 break;
                 case 4:
-                    $querySearch = ' WHERE part='.$partNumber;
+                    $querySearch = " WHERE part=".$partNumber;
                 break;
                 case 3:
-                    $querySearch = ' WHERE sn='.$id.' AND name="'.$name.'"';
+                    $querySearch = " WHERE sn=".$id." AND name='".$name."'";
                 break;
                 case 5:
-                    $querySearch = ' WHERE sn='.$id.' AND part='.$partNumber;
+                    $querySearch = " WHERE sn=".$id." AND part=".$partNumber;
                 break;
                 case 6:
-                    $querySearch = ' WHERE name="'.$id.'" AND part='.$partNumber;
+                    $querySearch = " WHERE name='".$name."' AND part=".$partNumber;
                 break;
                 case 7:
-                    $querySearch = ' WHERE sn='.$id.' AND name="'.$name.'" AND part='.$partNumber;
+                    $querySearch = " WHERE sn=".$id." AND name='".$name."' AND part=".$partNumber;
                 break;
             }
 
@@ -62,6 +62,31 @@
 
             return $ret;
             
+        }
+
+        function updateMemberInformation($id, $name, $part, $churchStaff, $calvaryStaff) {
+            
+            try {
+
+                $conn = $this->dbConn->getNewDBConn();
+                $query = "UPDATE member_info SET name = :member_name, part = :member_part, church_staff = :member_staff, calvary_staff = :member_calvary_staff WHERE sn = :member_sn";
+                $stmt = $conn->prepare($query);
+                echo $query;
+                $stmt->bindParam(':member_name', $name, PDO::PARAM_STR);
+                $stmt->bindParam(':member_part', $part, PDO::PARAM_INT);
+                $stmt->bindParam(':member_staff', $churchStaff, PDO::PARAM_INT);
+                $stmt->bindParam(':member_calvary_staff', $calvaryStaff, PDO::PARAM_INT);
+                $stmt->bindParam(':member_sn', $id, PDO::PARAM_INT);
+                $stmt->execute();
+                $this->dbConn->closeDBConn();
+
+                return true;
+
+            } catch(PDOException $e) {
+
+                return false;
+            }
+
         }
 
     }

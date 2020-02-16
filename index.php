@@ -110,4 +110,81 @@
         
     })->setName('members_register_search');
 
+    // ### member register id
+    $app->get('/members/register/{id}', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        $id = $args['id'];
+        if(is_numeric($id)) {
+            require_once __DIR__ . '/src/models/Member.php';
+            require_once __DIR__ . '/src/models/Part.php';
+            require_once __DIR__ . '/src/models/ChurchStaff.php';
+            require_once __DIR__ . '/src/models/MemberState.php';
+            require_once __DIR__ . '/src/models/CalvaryStaff.php';
+
+            $memberModel = new Member();
+            
+            // display data
+            $searchResult = $memberModel->getMemberSearchResult($id, '', '');
+            if(count($searchResult) == 1) {
+                //
+                $editInfo = array();
+                $editInfo['sn'] = $searchResult[0]['sn'];
+                $editInfo['name'] = $searchResult[0]['name'];
+                $editInfo['part'] = Part::getPartName($searchResult[0]['part']);
+                $editInfo['church_staff'] = ChurchStaff::getChurchStaffName($searchResult[0]['church_staff']);
+                $editInfo['calvary_staff'] = CalvaryStaff::getCalvaryStaffName($searchResult[0]['calvary_staff']);
+
+                return $view->render($response, 'members_register_id.twig', ['edit_info' => $editInfo, 'login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+            } else {
+                return $view->render($response, 'members_register_id_noresult.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+            }
+        } else {
+            return $view->render($response, 'members_register_id_noresult.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+        }
+        
+    })->setName('members_register_id');
+
+    // ### member register id edit
+    $app->post('/members/register/{id}/edit', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        require_once __DIR__ . '/src/models/Member.php';
+        require_once __DIR__ . '/src/models/Part.php';
+        require_once __DIR__ . '/src/models/ChurchStaff.php';
+        require_once __DIR__ . '/src/models/MemberState.php';
+        require_once __DIR__ . '/src/models/CalvaryStaff.php';
+
+        $memberModel = new Member();
+        $id = $_POST["member_id"];
+        $name = $_POST["member_name"];
+        $part = Part::getPartNumber($_POST["member_part"]);
+        $churchStaff = ChurchStaff::getChurchStaffNumber($_POST["member_church_staff"]);
+        $calvaryStaff = CalvaryStaff::getCalvaryStaffNumber($_POST["member_calvary_staff"]);
+
+        if(!empty($name)) {
+            $editResult = $memberModel->updateMemberInformation($id, $name, $part, $churchStaff, $calvaryStaff);
+            if($editResult) {
+                //redirect to members register id
+                return $response->withHeader('Location', '/calvary-web-2/members/register/'.$id)->withStatus(302);
+            } else {
+                $editInfo['sn'] = $_POST["member_id"];
+                $editInfo['name'] = $_POST["member_name"];
+                $editInfo['part'] = $_POST["member_part"];
+                $editInfo['church_staff'] = $_POST["member_church_staff"];
+                $editInfo['calvary_staff'] = $_POST["member_calvary_staff"];
+                return $view->render($response, 'members_register_id_editerror.twig', ['edit_info' => $editInfo, 'login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+            }
+        } else {
+            $editInfo = array();
+            $editInfo['sn'] = $_POST["member_id"];
+            $editInfo['name'] = $_POST["member_name"];
+            $editInfo['part'] = $_POST["member_part"];
+            $editInfo['church_staff'] = $_POST["member_church_staff"];
+            $editInfo['calvary_staff'] = $_POST["member_calvary_staff"];
+            return $view->render($response, 'members_register_id_editerror.twig', ['edit_info' => $editInfo, 'login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+        }
+        
+    })->setName('members_register_id_edit');
+
     $app->run();
