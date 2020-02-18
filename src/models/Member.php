@@ -89,4 +89,48 @@
 
         }
 
+        function addMember($name, $part, $churchStaff, $calvaryStaff, $lastState) {
+            
+                $conn = $this->dbConn->getNewDBConn();
+                
+                $ret[0] = -2; //result
+                $ret[1] = 0; //last insert id
+                //check whether same name is already registered in same part
+                $query = "SELECT * FROM member_info WHERE part=".$part." AND name='".$name."'";
+                $stmt = $conn->prepare($query);
+                $stmt->execute();
+                $num_of_rows = $stmt->rowCount();
+                
+                if($num_of_rows>0) {
+                    $ret[0] = -1;
+                }
+
+                $query = "INSERT INTO member_info (id, name, part, church_staff, calvary_staff, last_state) VALUES (:in1, :in2, :in3, :in4, :in5, :in6)";
+                $stmt = $conn->prepare($query);
+                $stmt->bindParam(':in1', $in1);
+                $stmt->bindParam(':in2', $in2);
+                $stmt->bindParam(':in3', $in3);
+                $stmt->bindParam(':in4', $in4);
+                $stmt->bindParam(':in5', $in5);
+                $stmt->bindParam(':in6', $in6);
+                $in1 = $part;
+                $in2 = $name;
+                $in3 = $part;
+                $in4 = $churchStaff;
+                $in5 = $calvaryStaff;
+                $in6 = $lastState;
+                $stmt->execute();
+
+                $id = $conn->lastInsertId();
+                if($ret[0] != -1) {
+                    $ret[0] = 0;
+                }
+                $ret[1] = $id;
+
+                $this->dbConn->closeDBConn();
+
+                return $ret;
+
+        }
+
     }

@@ -187,4 +187,37 @@
         
     })->setName('members_register_id_edit');
 
+    // ### member register search
+    $app->post('/members/register/add', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        require_once __DIR__ . '/src/models/Member.php';
+        require_once __DIR__ . '/src/models/Part.php';
+        require_once __DIR__ . '/src/models/ChurchStaff.php';
+        require_once __DIR__ . '/src/models/CalvaryStaff.php';
+        require_once __DIR__ . '/src/models/MemberState.php';
+
+        $inputInfo['name'] = $_POST["member_name"];
+        $inputInfo['part'] = Part::getPartNumber($_POST["member_part"]);
+        $inputInfo['church_staff'] = ChurchStaff::getChurchStaffNumber($_POST["member_church_staff"]);
+        $inputInfo['calvary_staff'] = CalvaryStaff::getCalvaryStaffNumber($_POST["member_calvary_staff"]);
+        $inputInfo['member_state'] = MemberState::getMemberStateNumber($_POST["member_state"]);
+        $inputInfo['member_state_date'] = $_POST["member_state_date"];
+
+        $memberModel = new Member();
+        $result = $memberModel->addMember($inputInfo['name'], $inputInfo['part'], $inputInfo['church_staff'], $inputInfo['calvary_staff'], $inputInfo['member_state']);
+        if($result[0] == 0) {
+            $updateMsg = 'success';
+            $inputInfo['id'] = $result[1];
+        } elseif ($result[0] == -1) {
+            $updateMsg = 'warning';
+            $inputInfo['id'] = $result[1];
+        } else {
+            $updateMsg = 'fail';
+        }
+
+        return $view->render($response, 'members_register_add.twig', ['message' => $updateMsg, 'input_info' => $inputInfo, 'login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+        
+    })->setName('members_register_add');
+
     $app->run();

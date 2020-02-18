@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    {{ include('member_register_title.twig') }}
+    {{ include('members_register_title.twig') }}
     <form action="/calvary-web-2/members/register/search" method="post">
         <table class="form-table">
             <tr>
@@ -17,7 +17,7 @@
                 <td><input type="text" class="form-control" placeholder="" id="member_name" name="member_name"></td>
             </tr>
             <tr>
-                <td>파트</td>
+                <td>파트: </td>
                 <td>
                     <select class="form-control" id="member_part" name="member_part">
                         <option></option>
@@ -37,5 +37,74 @@
             </tr>
         </table>
     </form>
-
+    {{ include('members_register_title_add.twig') }}
+    <form action="/calvary-web-2/members/register/add" method="post">
+        <table class="form-table">
+            <tr>
+                <td>이름: </td>
+                <td><input type="text" class="form-control" placeholder="" id="member_name" name="member_name" required></td>
+            </tr>
+            <tr>
+                <td>파트: </td>
+                <td>
+                    <select class="form-control" id="member_part" name="member_part">
+                        <option>소프라노A</option>
+                        <option>소프라노B</option>
+                        <option>소프라노B+</option>
+                        <option>알토A</option>
+                        <option>알토B</option>
+                        <option>테너</option>
+                        <option>베이스</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>직분: </td>
+                <td>
+                    <select class="form-control" id="member_church_staff" name="member_church_staff">
+                        <option>성도</option>
+                        <option>집사</option>
+                        <option>안수집사</option>
+                        <option>권사</option>
+                        <option>장로</option>
+                        <option>전도사</option>
+                        <option>목사</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>파트장 여부: </td>
+                <td>
+                    <select class="form-control" id="member_calvary_staff" name="member_calvary_staff">
+                        <option>대원</option>
+                        <option>파트장</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>상태: </td>
+                <td>
+                    <select class="form-control" id="member_state" name="member_state">
+                        <option>정대원</option>
+                        <option>솔리스트</option>
+                        <option selected>신입</option>
+                        <option>임시</option>
+                        <option>특별</option>
+                        <option>휴식</option>
+                        <option>제적</option>
+                        <option>은퇴</option>
+                        <option>명예</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>날짜: </td>
+                <td><input type="date" name="member_state_date" value="{{ "now"|date("Y-m-d") }}"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit" class="btn btn-primary" name="member_register_search">등록</button></td>
+            </tr>
+        </table>
+    </form>
 {% endblock %}
