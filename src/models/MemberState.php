@@ -1,14 +1,42 @@
 <?php
 
-    // require_once 'DBConn.php';
+    require_once 'DBConn.php';
 
     class MemberState
     {
-        // public $dbConn;
+        public $dbConn;
 
-        // function __construct() {
-        //     $this->dbConn = new DBConn();
-        // }
+        function __construct() {
+            $this->dbConn = new DBConn();
+        }
+
+        function addMemberState($id, $date, $state) {
+
+            try {
+
+                $conn = $this->dbConn->getNewDBConn();
+                //add record to database
+                $query = "INSERT INTO member_state (id, state_update_date, state) VALUES (:in1, :in2, :in3)";
+                $stmt = $conn->prepare($query);
+                $stmt->bindParam(':in1', $in1);
+                $stmt->bindParam(':in2', $in2);
+                $stmt->bindParam(':in3', $in3);
+
+                $in1 = $id;
+                $in2 = $date;
+                $in3 = $state;
+                $stmt->execute();
+
+                $this->dbConn->closeDBConn();
+
+                return true;
+
+            } catch(PDOException $e) {
+
+                return false;
+            }
+
+        }
 
         static function getMemberStateNumber($memberStateName) {
 

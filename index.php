@@ -192,6 +192,7 @@
         $view = Twig::fromRequest($request);
 
         require_once __DIR__ . '/src/models/Member.php';
+        require_once __DIR__ . '/src/models/MemberState.php';
         require_once __DIR__ . '/src/models/Part.php';
         require_once __DIR__ . '/src/models/ChurchStaff.php';
         require_once __DIR__ . '/src/models/CalvaryStaff.php';
@@ -206,12 +207,16 @@
 
         $memberModel = new Member();
         $result = $memberModel->addMember($inputInfo['name'], $inputInfo['part'], $inputInfo['church_staff'], $inputInfo['calvary_staff'], $inputInfo['member_state']);
+        $memberStateModel = new MemberState();
+
         if($result[0] == 0) {
             $updateMsg = 'success';
             $inputInfo['id'] = $result[1];
+            $resultMemberState = $memberStateModel->addMemberState($inputInfo['id'], $inputInfo['member_state_date'], $inputInfo['member_state']);
         } elseif ($result[0] == -1) {
             $updateMsg = 'warning';
             $inputInfo['id'] = $result[1];
+            $resultMemberState = $memberStateModel->addMemberState($inputInfo['id'], $inputInfo['member_state_date'], $inputInfo['member_state']);
         } else {
             $updateMsg = 'fail';
         }
