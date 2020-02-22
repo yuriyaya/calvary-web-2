@@ -133,4 +133,26 @@
 
         }
 
+        function deleteMember($id) {
+
+            $ret = false;
+            try {
+                
+                $conn = $this->dbConn->getNewDBConn();
+                
+                $query = "DELETE FROM member_info WHERE sn=".$id;
+                $stmt = $conn->prepare($query);
+                $stmt->execute();
+                
+                $this->dbConn->closeDBConn();
+                $ret = true;
+                
+            } catch(PDOException $e) {
+                $ret = false;
+            }
+
+            return $ret;
+
+    }
+
     }

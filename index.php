@@ -225,4 +225,29 @@
         
     })->setName('members_register_add');
 
+    // ### member register id delete
+    $app->get('/members/register/{id}/delete', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        $id = $args['id'];
+
+        require_once __DIR__ . '/src/models/Member.php';
+        require_once __DIR__ . '/src/models/MemberState.php';
+
+        $memberModel = new Member();
+        $resultMember = $memberModel->deleteMember($id);
+        if($resultMember) {
+            $memberStateModel = new MemberState();
+            $resultState = $memberStateModel->deleteMemberState($id);
+            if($resultState) {
+                return $view->render($response, 'members_register_delete.twig', ['message' => 'success', 'login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+            } else {
+                return $view->render($response, 'members_register_delete.twig', ['message' => 'fail', 'login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+            }
+        } else {
+            return $view->render($response, 'members_register_delete.twig', ['message' => 'fail', 'login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+        }
+        
+    })->setName('members_register_id_delete');
+
     $app->run();

@@ -12,6 +12,7 @@
 
         function addMemberState($id, $date, $state) {
 
+            $ret = false;
             try {
 
                 $conn = $this->dbConn->getNewDBConn();
@@ -25,6 +26,27 @@
                 $in1 = $id;
                 $in2 = $date;
                 $in3 = $state;
+                $stmt->execute();
+
+                $this->dbConn->closeDBConn();
+
+                $ret = true;
+
+            } catch(PDOException $e) {
+                $ret = false;
+            }
+            return $ret;
+
+        }
+
+        function deleteMemberState($id) {
+
+            try {
+
+                $conn = $this->dbConn->getNewDBConn();
+
+                $query = "DELETE FROM member_state WHERE id=".$id;
+                $stmt = $conn->prepare($query);
                 $stmt->execute();
 
                 $this->dbConn->closeDBConn();

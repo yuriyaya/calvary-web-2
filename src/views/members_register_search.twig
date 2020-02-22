@@ -37,6 +37,7 @@
             </tr>
         </table>
     </form>
+    <div style="overflow-x:auto;">
     <table class="member-search-result table table-bordered table-hover table-sm">
         <thead class="thead-dark">
             <th>ID</th>
@@ -54,9 +55,11 @@
                 <td>{{ row.part }}</td>
                 <td>{{ row.church_staff }}</td>
                 <td>{{ row.last_state }}</td>
-                <td><a class="btn btn-outline-primary btn-sm" href="/calvary-web-2/members/register/{{ row.sn }}" role="button">수정</a></td>
+                <td><a class="btn btn-outline-primary btn-sm" href="/calvary-web-2/members/register/{{ row.sn }}" role="button">수정</a> 
+                <a class="btn btn-outline-danger btn-sm" href="/calvary-web-2/members/register/{{ row.sn }}/delete" role="button">삭제</a></td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+    </div>
 {% endblock %}
