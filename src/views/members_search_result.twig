@@ -1,0 +1,72 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">대원 정보 조회 결과</div>
+    {% if result == 'fail' %}
+    <div class="alert alert-danger">
+        <strong>에러!</strong> 대원 조회 결과가 없습니다. 확인 후 다시 시도해 주세요.
+    </div>
+    {% endif %}
+    {% if result == 'success' %}
+    <div class="alert alert-success">
+        <strong>성공!</strong> 대원 조회 성공하였습니다.
+    </div>
+    {% endif %}
+    <form action="/calvary-web-2/members/search" method="get">
+        <table class="form-table">
+            <tr>
+                <td>아이디: </td>
+                <td><input type="text" class="form-control" placeholder="" id="id" name="id" value="{{ input_info.id }}"></td>
+            </tr>
+            <tr>
+                <td>이름: </td>
+                <td><input type="text" class="form-control" placeholder="" id="name" name="name" value="{{ input_info.name }}"></td>
+            </tr>
+            <tr>
+                <td>파트</td>
+                <td>
+                    <select class="form-control" id="part" name="part">
+                        <option value="0" {% if input_info.part == 0 %} selected {% endif %}></option>
+                        <option value="1" {% if input_info.part == 1 %} selected {% endif %}>소프라노A</option>
+                        <option value="2" {% if input_info.part == 2 %} selected {% endif %}>소프라노B</option>
+                        <option value="3" {% if input_info.part == 3 %} selected {% endif %}>소프라노B+</option>
+                        <option value="4" {% if input_info.part == 4 %} selected {% endif %}>알토A</option>
+                        <option value="5" {% if input_info.part == 5 %} selected {% endif %}>알토B</option>
+                        <option value="6" {% if input_info.part == 6 %} selected {% endif %}>테너</option>
+                        <option value="7" {% if input_info.part == 7 %} selected {% endif %}>베이스</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="hidden" class="form-control" placeholder="" id="view" name="view" value="1"></td>
+                <td><button type="submit" class="btn btn-primary" name="search">조회</button></td>
+            </tr>
+        </table>
+    </form>
+    <table class="member-search-result table table-bordered table-hover table-sm">
+        <thead class="thead-dark">
+            <th>ID</th>
+            <th>이름</th>
+            <th>파트</th>
+            <th>직분</th>
+            <th>상태</th>
+            <th></th>
+        </thead>
+        <tbody>
+        {% for row in search_result %}
+            <tr>
+                <td>{{ row.sn }}</td>
+                <td>{{ row.name }}</td>
+                <td>{{ row.part }}</td>
+                <td>{{ row.church_staff }}</td>
+                <td>{{ row.last_state }}</td>
+                <td><a class="btn btn-outline-primary btn-sm" href="/calvary-web-2/members/{{ row.sn }}" role="button">자세히</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

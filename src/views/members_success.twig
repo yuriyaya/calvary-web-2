@@ -1,0 +1,12 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">{{ title }}</div>
+    <div class="alert alert-success">
+        <strong>성공!</strong> {{ message }}
+    </div>
+{% endblock %}

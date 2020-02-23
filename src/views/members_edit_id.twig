@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block content %}
-    {{ include('members_register_title.twig') }}
-    <form action="/calvary-web-2/members/register/{{ edit_info.sn }}/edit" method="post">
+    {{ include('members_status_title.twig') }}
+    <form action="/calvary-web-2/members/status/{{ edit_info.sn }}/edit" method="post">
         <table class="form-table">
             <tr>
                 <td>아이디: </td>
@@ -31,32 +31,29 @@
                 </td>
             </tr>
             <tr>
-                <td>직분: </td>
-                <td>
-                    <select class="form-control" id="member_church_staff" name="member_church_staff">
-                        <option {% if edit_info.church_staff == '성도' %} selected {% endif %}>성도</option>
-                        <option {% if edit_info.church_staff == '집사' %} selected {% endif %}>집사</option>
-                        <option {% if edit_info.church_staff == '안수집사' %} selected {% endif %}>안수집사</option>
-                        <option {% if edit_info.church_staff == '권사' %} selected {% endif %}>권사</option>
-                        <option {% if edit_info.church_staff == '장로' %} selected {% endif %}>장로</option>
-                        <option {% if edit_info.church_staff == '전도사' %} selected {% endif %}>전도사</option>
-                        <option {% if edit_info.church_staff == '목사' %} selected {% endif %}>목사</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>파트장 여부: </td>
-                <td>
-                    <select class="form-control" id="member_calvary_staff" name="member_calvary_staff">
-                        <option {% if edit_info.calvary_staff == '대원' %} selected {% endif %}>대원</option>
-                        <option {% if edit_info.calvary_staff == '파트장' %} selected {% endif %}>파트장</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
                 <td></td>
                 <td><button type="submit" class="btn btn-primary" name="member_register_edit">수정</button></td>
             </tr>
         </table>
     </form>
+    <table class="member-search-result table table-bordered table-hover table-sm">
+        <thead class="thead-dark">
+            <th>ID</th>
+            <th>이름</th>
+            <th>파트</th>
+            <th>상태</th>
+            <th></th>
+        </thead>
+        <tbody>
+        {% for row in search_result %}
+            <tr>
+                <td>{{ row.sn }}</td>
+                <td>{{ row.name }}</td>
+                <td>{{ row.part }}</td>
+                <td>{{ row.last_state }}</td>
+                <td><a class="btn btn-outline-primary btn-sm" href="/calvary-web-2/members/status/{{ row.sn }}" role="button">수정</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

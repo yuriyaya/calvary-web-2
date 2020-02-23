@@ -1,0 +1,40 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">대원 정보 조회 및 수정</div>
+    <form action="/calvary-web-2/members/search" method="get">
+        <table class="form-table">
+            <tr>
+                <td>아이디: </td>
+                <td><input type="text" class="form-control" placeholder="" id="id" name="id"></td>
+            </tr>
+            <tr>
+                <td>이름: </td>
+                <td><input type="text" class="form-control" placeholder="" id="name" name="name"></td>
+            </tr>
+            <tr>
+                <td>파트: </td>
+                <td>
+                    <select class="form-control" id="part" name="part">
+                        <option value="0"></option>
+                        <option value="1">소프라노A</option>
+                        <option value="2">소프라노B</option>
+                        <option value="3">소프라노B+</option>
+                        <option value="4">알토A</option>
+                        <option value="5">알토B</option>
+                        <option value="6">테너</option>
+                        <option value="7">베이스</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="hidden" class="form-control" placeholder="" id="view" name="view" value="1"></td>
+                <td><button type="submit" class="btn btn-primary" name="search">조회</button></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

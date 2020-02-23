@@ -1,0 +1,78 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">대원 등록</div>
+    <form action="/calvary-web-2/members/add" method="post">
+        <table class="form-table">
+            <tr>
+                <td>이름: </td>
+                <td><input type="text" class="form-control" placeholder="" id="member_name" name="member_name" required></td>
+            </tr>
+            <tr>
+                <td>파트: </td>
+                <td>
+                    <select class="form-control" id="member_part" name="member_part">
+                        <option value="1">소프라노A</option>
+                        <option value="2">소프라노B</option>
+                        <option value="3">소프라노B+</option>
+                        <option value="4">알토A</option>
+                        <option value="5">알토B</option>
+                        <option value="6">테너</option>
+                        <option value="7">베이스</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>직분: </td>
+                <td>
+                    <select class="form-control" id="member_church_staff" name="member_church_staff">
+                        <option value="1">성도</option>
+                        <option value="2">집사</option>
+                        <option value="3">안수집사</option>
+                        <option value="4">권사</option>
+                        <option value="5">장로</option>
+                        <option value="6">전도사</option>
+                        <option value="7">목사</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>파트장 여부: </td>
+                <td>
+                    <select class="form-control" id="member_calvary_staff" name="member_calvary_staff">
+                        <option value="1">대원</option>
+                        <option value="2">파트장</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>상태: </td>
+                <td>
+                    <select class="form-control" id="member_state" name="member_state">
+                        <option value="1">정대원</option>
+                        <option value="2">솔리스트</option>
+                        <option value="3" selected>신입</option>
+                        <option value="4">임시</option>
+                        <option value="5">특별</option>
+                        <option value="6">휴식</option>
+                        <option value="7">제적</option>
+                        <option value="8">은퇴</option>
+                        <option value="9">명예</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>날짜: </td>
+                <td><input type="date" name="member_state_date" value="{{ "now"|date("Y-m-d") }}"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit" class="btn btn-primary" name="member_add">등록</button></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

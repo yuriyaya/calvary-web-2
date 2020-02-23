@@ -1,0 +1,37 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">대원 상태 정보 수정</div>
+    <form action="/calvary-web-2/members/{{ state_info.id }}/states/{{ state_info.sn }}/edit" method="post">
+        <table class="form-table">
+            <tr>
+                <td>날짜: </td>
+                <td><input type="date" name="member_state_date" value="{{ state_info.state_update_date }}"></td>
+            </tr>
+            <tr>
+                <td>상태: </td>
+                <td>
+                    <select class="form-control" id="member_state" name="member_state">
+                        <option value="1" {% if state_info.state == 1 %} selected {% endif %}>정대원</option>
+                        <option value="2" {% if state_info.state == 2 %} selected {% endif %}>솔리스트</option>
+                        <option value="3" {% if state_info.state == 3 %} selected {% endif %}>신입</option>
+                        <option value="4" {% if state_info.state == 4 %} selected {% endif %}>임시</option>
+                        <option value="5" {% if state_info.state == 5 %} selected {% endif %}>특별</option>
+                        <option value="6" {% if state_info.state == 6 %} selected {% endif %}>휴식</option>
+                        <option value="7" {% if state_info.state == 7 %} selected {% endif %}>제적</option>
+                        <option value="8" {% if state_info.state == 8 %} selected {% endif %}>은퇴</option>
+                        <option value="9" {% if state_info.state == 9 %} selected {% endif %}>명예</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="hidden" class="form-control" placeholder="" id="member_id" name="member_id" value="{{ state_info.sn }}"></td>
+                <td><button type="submit" class="btn btn-primary" name="member_id_states_edit">수정</button></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}
