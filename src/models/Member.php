@@ -71,7 +71,6 @@
                 $conn = $this->dbConn->getNewDBConn();
                 $query = "UPDATE member_info SET name = :member_name, part = :member_part, church_staff = :member_staff, calvary_staff = :member_calvary_staff WHERE sn = :member_sn";
                 $stmt = $conn->prepare($query);
-                echo $query;
                 $stmt->bindParam(':member_name', $name, PDO::PARAM_STR);
                 $stmt->bindParam(':member_part', $part, PDO::PARAM_INT);
                 $stmt->bindParam(':member_staff', $churchStaff, PDO::PARAM_INT);

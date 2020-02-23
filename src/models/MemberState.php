@@ -101,7 +101,6 @@
                 $conn = $this->dbConn->getNewDBConn();
                 $query = "UPDATE member_state SET id=:id, state_update_date=:date, state=:state WHERE sn=:sn";
                 $stmt = $conn->prepare($query);
-                echo $query;
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->bindParam(':date', $date);
                 $stmt->bindParam(':state', $state, PDO::PARAM_INT);

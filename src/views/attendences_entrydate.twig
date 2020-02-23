@@ -1,0 +1,42 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">출결 날짜 등록</div>
+    <form action="/calvary-web-2/attendences/entrydate/add" method="post">
+        <table class="form-table">
+            <tr>
+                <td>날짜: </td>
+                <td><input type="date" name="date" value="{{ "now"|date("Y-m-d") }}"></td>
+            </tr>
+            <tr>
+                <td>설명: </td>
+                <td><input type="text" class="form-control" placeholder="" id="description" name="description"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit" class="btn btn-primary" name="add">등록</button></td>
+            </tr>
+        </table>
+    </form>
+    <div class="page-title bg-secondary text-white">출결 날짜 조회</div>
+    <form action="/calvary-web-2/attendences/entrydate/search" method="get">
+        <table class="form-table">
+            <tr>
+                <td>시작: </td>
+                <td><input type="date" name="start" value="{{ "now"|date_modify("-1 month")|date("Y-m-d") }}"></td>
+            </tr>
+            <tr>
+                <td>종료: </td>
+                <td><input type="date" name="end" value="{{ "now"|date_modify("+1 month")|date("Y-m-d") }}"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit" class="btn btn-primary" name="search">조회</button></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

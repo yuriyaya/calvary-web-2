@@ -1,0 +1,34 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">출석 날짜</div>
+    <form action="/calvary-web-2/attendences/entrydate/{{ info.sn }}/edit" method="post">
+        <table class="form-table">
+            <tr>
+                <td>아이디: </td>
+                <td><input type="text" class="form-control" placeholder="" id="id" name="id" value="{{ info.sn }}" readonly></td>
+            </tr>
+            <tr>
+                <td>날짜: </td>
+                <td><input type="date" class="form-control" placeholder="" id="date" name="date" value="{{ info.date }}" readonly></td>
+            </tr>
+            <tr>
+                <td>요일: </td>
+                <td><input type="text" class="form-control" placeholder="" id="day" name="day" value="{{ info.type }}" readonly></td>
+            </tr>
+            <tr>
+                <td>설명: </td>
+                <td><input type="text" class="form-control" placeholder="" id="description" name="description" value="{{ info.details }}"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit" class="btn btn-primary" name="edit">수정</button>
+                <a class="btn btn-danger" href="/calvary-web-2/attendences/entrydate/{{ info.sn }}/delete" role="button">삭제</a></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

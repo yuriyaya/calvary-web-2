@@ -1,0 +1,54 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">출결 날짜 조회</div>
+    {% if result == 'fail' %}
+    <div class="alert alert-danger">
+        <strong>에러!</strong> 출결 날짜 조회 결과가 없습니다. 확인 후 다시 시도해 주세요.
+    </div>
+    {% endif %}
+    {% if result == 'success' %}
+    <div class="alert alert-success">
+        <strong>성공!</strong> 출결 날짜 조회 성공하였습니다.
+    </div>
+    {% endif %}
+    <form action="/calvary-web-2/attendences/entrydate/search" method="get">
+        <table class="form-table">
+            <tr>
+                <td>시작: </td>
+                <td><input type="date" name="start" value="{{ input_info.start }}"></td>
+            </tr>
+            <tr>
+                <td>종료: </td>
+                <td><input type="date" name="end" value="{{ input_info.end }}"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit" class="btn btn-primary" name="search">조회</button></td>
+            </tr>
+        </table>
+    </form>
+    <table class="member-search-result table table-bordered table-hover table-sm">
+        <thead class="thead-dark">
+            <th>날짜</th>
+            <th>요일</th>
+            <th>설명</th>
+            <th></th>
+        </thead>
+        <tbody>
+        {% for row in search_result %}
+            <tr>
+                <td>{{ row.att_date }}</td>
+                <td>{{ row.type }}</td>
+                <td>{{ row.details }}</td>
+                <td><a class="btn btn-outline-primary btn-sm" href="/calvary-web-2/attendences/entrydate/{{ row.sn }}" role="button">수정</a>
+                <a class="btn btn-outline-danger btn-sm" href="/calvary-web-2/attendences/entrydate/{{ row.sn }}/delete" role="button">삭제</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

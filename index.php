@@ -105,7 +105,7 @@
             } else {
                 $title = '대원 정보 조회';
                 $message = '대원 정보 조회 실패 - 확인 후 다시 시도해 주세요';
-                return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
             }
         } else {
             return $view->render($response, 'members_search.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
@@ -150,12 +150,12 @@
             } else {
                 $title = '대원 정보 조회';
                 $message = '대원 정보 조회 실패 - 확인 후 다시 시도해 주세요';
-                return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
             }
         } else {
             $title = '대원 정보 조회';
             $message = '입력된 아이디 값 에러 - 확인 후 다시 시도해 주세요';
-            return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
         }
         
     })->setName('members_id');
@@ -177,12 +177,12 @@
             } else {
                 $title = '대원 정보 수정';
                 $message = '대원 정보 수정 실패 - 확인 후 다시 시도해 주세요';
-                return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
             }
         } else {
             $title = '대원 정보 수정';
             $message = '이름 입력값 에러 - 확인 후 다시 시도해 주세요';
-            return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
         }
         
     })->setName('members_id_edit');
@@ -204,19 +204,19 @@
             if($resultState) {
                 $title = '대원 정보 삭제';
             $message = '대원 정보 삭제 성공 - '.$id.' 대원이 삭제 되었습니다';
-            return $view->render($response, 'members_success.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            return $view->render($response, 'result_success.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
             } else {
                 $title = '대원 정보 삭제';
             $message = '대원 상태 정보 삭제 에러 - 확인 후 다시 시도해 주세요';
-            return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
             }
         } else {
             $title = '대원 정보 삭제';
             $message = '대원 정보 삭제 에러 - 확인 후 다시 시도해 주세요';
-            return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
         }
         
-    })->setName('members_register_id_delete');
+    })->setName('members_id_delete');
 
     // ### member add form
     $app->get('/members', function ($request, $response, $args) {
@@ -265,7 +265,7 @@
         } else {
             $title = '대원 상태 추가';
             $message = '대원 상태 추가 실패 - 확인 후 다시 시도해 주세요';
-            return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
         }
         
     })->setName('members_state_add');
@@ -304,12 +304,12 @@
             } else {
                 $title = '대원 상태 수정';
                 $message = '대원 최종 상태 수정 실패 - 확인 후 다시 시도해 주세요';
-                return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
             }
         } else {
             $title = '대원 상태 수정';
             $message = '대원 상태 수정 실패 - 확인 후 다시 시도해 주세요';
-            return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
         }
     })->setName('members_state_add');
 
@@ -332,13 +332,133 @@
             } else {
                 $title = '대원 상태 삭제';
                 $message = '대원 최종 상태 수정 실패 - 확인 후 다시 시도해 주세요';
-                return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
             }
         } else {
             $title = '대원 상태 삭제';
             $message = '대원 상태 삭제 실패 - 확인 후 다시 시도해 주세요';
-            return $view->render($response, 'members_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
         }
     })->setName('members_state_delete');
+
+    // ### attendence entry date add form
+    $app->get('/attendences/entrydate', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+        return $view->render($response, 'attendences_entrydate.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+    })->setName('entrydate');
+
+     //  ## attendence entry date search
+    $app->get('/attendences/entrydate/search', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+        if(isset($_GET['search'])) {
+
+            $inputInfo['start'] = $_GET["start"];
+            $inputInfo['end'] = $_GET["end"];
+
+            require_once __DIR__ . '/src/models/EntryDate.php';
+            $ed = new EntryDate();
+            $searchResult = $ed->getEntryDateSearchResult($inputInfo['start'], $inputInfo['end']);
+
+            if(count($searchResult) > 0) {
+                //
+                for($rowIdx=0; $rowIdx<count($searchResult); $rowIdx++) {
+                    $searchResult[$rowIdx]['type'] = EntryDate::getEntryDateDay($searchResult[$rowIdx]['type']);
+                }
+                $result = 'success';
+            } else {
+                $result = 'fail';
+            }
+            return $view->render($response, 'attendences_entrydate_search.twig', ['result'=>$result, 'input_info'=>$inputInfo, 'search_result'=>$searchResult, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+
+        } else {
+            return $view->render($response, 'members_search.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+        }
+    })->setName('entrydate_search');
+
+    // ### attendence entry date add
+    $app->post('/attendences/entrydate/add', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        require_once __DIR__ . '/src/models/EntryDate.php';
+        $ed = new EntryDate();
+        $result = $ed->addEntryDate($_POST['date'], $_POST['description']);
+        if($result>0) {
+            return $response->withHeader('Location', '/calvary-web-2/attendences/entrydate/'.$result)->withStatus(302);
+        } else {
+            $title = '출결 날짜 추가';
+            $message = '출결 날짜 추가 실패 - 확인 후 다시 시도해 주세요';
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+        }
+        
+    })->setName('entrydate_add');
+
+    // ### attendences entry date id
+    $app->get('/attendences/entrydate/{id}', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        $id = $args['id'];
+        if(is_numeric($id)) {
+            require_once __DIR__ . '/src/models/EntryDate.php';
+            $ed = new EntryDate();
+            $searchResult = $ed->getEntryDateBySN($id);
+            if(count($searchResult) == 1) {
+                $info = array();
+                $info['sn'] = $searchResult[0]['sn'];
+                $info['date'] = $searchResult[0]['att_date'];
+                $info['type'] = EntryDate::getEntryDateDay($searchResult[0]['type']);
+                $info['details'] = $searchResult[0]['details'];
+                return $view->render($response, 'attendences_entrydate_id.twig', ['info'=>$info, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            } else {
+                $title = '출결 날짜 조회';
+                $message = '출결 날짜 조회 실패 - 확인 후 다시 시도해 주세요';
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            }
+        } else {
+            $title = '출결 날짜 조회';
+            $message = '입력된 아이디 값 에러 - 확인 후 다시 시도해 주세요';
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+        }
+        
+    })->setName('entrydate_id');
+
+    // ### attendence entry date id edit
+    $app->post('/attendences/entrydate/{id}/edit', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        $id = $args['id'];
+        require_once __DIR__ . '/src/models/EntryDate.php';
+        $ed = new EntryDate();
+        
+        $editResult = $ed->updateEntryDateDescription($id, $_POST["description"]);
+        if($editResult) {
+            return $response->withHeader('Location', '/calvary-web-2/attendences/entrydate/'.$id)->withStatus(302);
+        } else {
+            $title = '출결 날짜 정보 수정';
+            $message = '출결 날짜 정보 수정 실패 - 확인 후 다시 시도해 주세요';
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+        }
+        
+    })->setName('entrydate_id_edit');
+
+    // ### attendence entry date id delete
+    $app->get('/attendences/entrydate/{id}/delete', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        $id = $args['id'];
+        require_once __DIR__ . '/src/models/EntryDate.php';
+        $ed = new EntryDate();
+        $result = $ed->deleteEntryDate($id);
+
+        if($result) {
+            $title = '출결 날짜 삭제';
+            $message = '출결 날짜 삭제 성공 - '.$id.' 출결 날짜가 삭제 되었습니다';
+            return $view->render($response, 'result_success.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+        } else {
+            $title = '출결 날짜 삭제';
+            $message = '출결 날짜 삭제 에러 - 확인 후 다시 시도해 주세요';
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+        }
+        
+    })->setName('entrydate_id_delete');
 
     $app->run();
