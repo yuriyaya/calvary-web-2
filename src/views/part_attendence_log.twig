@@ -1,0 +1,46 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">출석 입력</div>
+    {% if result == 'fail' %}
+    <div class="alert alert-danger">
+        <strong>에러!</strong>
+    </div>
+    {% endif %}
+    {% if result == 'success' %}
+    <form action="/calvary-web-2/attendences/logs/parts/{{ part_num }}/members/123456/{{ date }}/edit" method="post">
+    <table class="att-log form-table table table-bordered table-hover table-sm">
+        <thead class="thead-dark">
+            <th>이름</th>
+            <th>상태</th>
+            <th>출석</th>
+            <th>지각</th>
+            {% for label in month_label %}
+                <th>{{ label }}월</th>
+            {% endfor %}
+        </thead>
+        <tbody>
+        {% for row in att_data %}
+            <tr>
+                <td>{{ row.name }}<input type="hidden" name="id[]" value="{{ row.id }}"></td>
+                <td>{{ row.state }}</td>
+                <td><div><input type="hidden" name="att[]" value="off"><input type="checkbox" class="form-control form-control-sm" name="att[]" {% if row.att == 10 %} checked {% endif %}></div></td>
+                <td><div><input type="hidden" name="late[]" value="off"><input type="checkbox" class="form-control form-control-sm" name="late[]" {% if row.late == 10 %} checked {% endif %}></div></td>
+                <td class="{{ row.m1_color }}">{% if row.m1 >= 0 %}{{ row.m1 }}%{% else %}-%{% endif %}</td>
+                <td class="{{ row.m2_color }}">{% if row.m2 >= 0 %}{{ row.m2 }}%{% else %}-%{% endif %}</td>
+                <td class="{{ row.m3_color }}">{% if row.m3 >= 0 %}{{ row.m3 }}%{% else %}-%{% endif %}</td>
+            </tr>
+        {% endfor %}
+            <tr class="bg-dark text-white"><td>총대원({{ stat.tot }})</td><td>{{ stat.tot_log }}</td><td>{% if stat.tot > 0 %}{{ (stat.tot_log / stat.tot * 100)|round }}%{% else %}-%{% endif %}</td><td></td><td></td><td></td><td></td></tr>
+            <tr class="bg-dark text-white"><td>정대원({{ stat.nor }})</td><td>{{ stat.nor_log }}</td><td{% if stat.nor == stat.nor_log %} class="bg-success"{% endif %}>{% if stat.nor > 0 %}{{ (stat.nor_log / stat.nor * 100)|round }}%{% else %}-%{% endif %}</td><td></td><td></td><td></td><td></td></tr>
+            <tr class="bg-dark text-white"><td>신입대원({{ stat.new }})</td><td>{{ stat.new_log }}</td><td>{% if stat.new > 0 %}{{ (stat.new_log / stat.new * 100)|round }}%{% else %}-%{% endif %}</td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary" name="update">출석 입력</button>
+    </form>
+    {% endif %}
+{% endblock %}

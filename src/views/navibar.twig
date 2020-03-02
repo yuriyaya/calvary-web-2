@@ -1,5 +1,7 @@
     {% if login_id == 'admin' %}
         {{ include('navibar_admin.twig') }}
+    {% elseif part_num > 0 %}
+        {{ include('navibar_part.twig') }}
     {% else %}
         {{ include('navibar_default.twig') }}
     {% endif %}

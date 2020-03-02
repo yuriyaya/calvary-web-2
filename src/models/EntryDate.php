@@ -106,6 +106,21 @@
             }
         }
 
+        function checkEntryDate($date) {
+            $ret = false;
+
+            $conn = $this->dbConn->getNewDBConn();
+            $query = "SELECT * FROM attendence_date WHERE att_date='".$date."';";
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+            while($row = $stmt->fetch()) {
+                $ret = true;
+            }
+            $this->dbConn->closeDBConn();
+
+            return $ret;
+        }
+
         static function getEntryDateDay($dayNumber) {
 
             switch($dayNumber) {

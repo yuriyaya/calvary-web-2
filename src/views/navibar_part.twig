@@ -1,0 +1,31 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">{{ login_name }}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars" aria-controls="navbars" aria-expanded="true" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse show" id="navbars" style="">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/calvary-web-2/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="partMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">파트</a>
+                <div class="dropdown-menu" aria-labelledby="partMenu">
+                    <a class="dropdown-item" href="/calvary-web-2/attendences/logs/parts/{{ part_num }}/members/123456/{{ date }}">출석 입력</a>
+                    <a class="dropdown-item" href="#">출석 수정</a>
+                    <a class="dropdown-item" href="#">대원 상태 변경</a>
+                    <a class="dropdown-item" href="#">-----</a>
+                    <a class="dropdown-item" href="#">월별 출석 통계</a>
+                    <a class="dropdown-item" href="#">연간 출석 통계</a>
+                    <a class="dropdown-item" href="#">지각 횟수 조회</a>
+                    <a class="dropdown-item" href="#">휴식 일수 조회</a>
+                    <a class="dropdown-item" href="#">결석 일수 조회</a>
+                    <a class="dropdown-item" href="#">근속일 조회</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/calvary-web-2/logout">로그아웃</a>
+            </li>
+        </ul>
+    </div>
+</nav>

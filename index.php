@@ -40,7 +40,15 @@
             return $view->render($response, 'login.twig');
         } else {
             // display main page
-            return $view->render($response, 'home.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+            require_once __DIR__ . '/src/models/Part.php';
+            $partNum = Part::getPartNumberByLoginId($_SESSION['userID']);
+            $today = date('Ymd');
+            if($partNum>0) {
+                // part menu
+                return $view->render($response, 'home.twig', ['part_num'=>$partNum, 'date'=>$today, 'login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+            } else {
+                return $view->render($response, 'home.twig', ['login_id' => $_SESSION['userID'], 'login_name' => Login::getLoginName($_SESSION['userID'])]);
+            }
         }
     })->setName('root');
 
@@ -460,5 +468,181 @@
         }
         
     })->setName('entrydate_id_delete');
+
+    // ### part
+    //  ## attendence log
+    $app->get('/attendences/logs/parts/{part_num}/members/123456/{date}', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        require_once __DIR__ . '/src/models/Functions.php';
+        $partNum = $args['part_num'];
+        $entryDate = Functions::getFormatDate($args['date']);
+        require_once __DIR__ . '/src/models/Part.php';
+        $loginPartNum = Part::getPartNumberByLoginId($_SESSION['userID']);
+
+        if($partNum == $loginPartNum) {
+
+            require_once __DIR__ . '/src/models/EntryDate.php';
+            $ed = new EntryDate();
+            $edCheck = $ed->checkEntryDate($args['date']);
+            if($edCheck) {
+                $attData = array();
+
+                require_once __DIR__ . '/src/models/MemberState.php';
+                require_once __DIR__ . '/src/models/Attendence.php';
+                $part = new Part($partNum);
+                $memberList = $part->getPartAttendenceMemberList($entryDate);
+                $att = new Attendence();
+                $attLog = $att->getAttLog($partNum, $entryDate);
+
+                $timestamp = strtotime($entryDate);
+                $m1Timestamp = strtotime(date('Y-m-01', $timestamp).' -1 months');
+                $m2Timestamp = strtotime(date('Y-m-01', $timestamp).' -2 months');
+                $m3Timestamp = strtotime(date('Y-m-01', $timestamp).' -3 months');
+                $m1 = date('Y-m-d', $m1Timestamp);
+                $m2 = date('Y-m-d', $m2Timestamp);
+                $m3 = date('Y-m-d', $m3Timestamp);
+                $m1Label = date('n', $m1Timestamp);
+                $m2Label = date('n', $m2Timestamp);
+                $m3Label = date('n', $m3Timestamp);
+
+                $attM1Log = $att->getMonthAttLog($partNum, $m1);
+                $attM2Log = $att->getMonthAttLog($partNum, $m2);
+                $attM3Log = $att->getMonthAttLog($partNum, $m3);
+                $monthLabel = array($m1Label, $m2Label, $m3Label);
+
+                $totalAll = 0;
+                $totalLog = 0;
+                $normalAll = 0;
+                $normalLog = 0;
+                $newbieAll = 0;
+                $newbieLog = 0;
+
+                for($rowIdx=0; $rowIdx<count($memberList); $rowIdx++) {
+                    $temp['id'] = $memberList[$rowIdx]['id'];
+                    $temp['name'] = $memberList[$rowIdx]['name'];
+                    if($rowIdx == 0) {
+                        $temp['state'] = '파트장';
+                    } else {
+                        if($memberList[$rowIdx]['state'] < 3) {
+                            $temp['state'] = '';
+                        } else {
+                            $temp['state'] = MemberState::getMemberStateName($memberList[$rowIdx]['state']);
+                        }
+                    }
+                    // attendence log
+                    if(array_key_exists($memberList[$rowIdx]['id'], $attLog)) {
+                        $attDateLog = $attLog[$memberList[$rowIdx]['id']];
+                        $temp['att'] = $attDateLog[0];
+                        $temp['late'] = $attDateLog[1];
+                    } else {
+                        $temp['att'] = 0;
+                        $temp['late'] = 0;
+                    }
+                    // 3 month attendence log
+                    if(array_key_exists($memberList[$rowIdx]['id'], $attM1Log)) {
+                        $temp['m1'] = $attM1Log[$memberList[$rowIdx]['id']];
+                    } else {
+                        $temp['m1'] = -1;
+                    }
+                    if(array_key_exists($memberList[$rowIdx]['id'], $attM2Log)) {
+                        $temp['m2'] = $attM2Log[$memberList[$rowIdx]['id']];
+                    } else {
+                        $temp['m2'] = -1;
+                    }
+                    if(array_key_exists($memberList[$rowIdx]['id'], $attM3Log)) {
+                        $temp['m3'] = $attM3Log[$memberList[$rowIdx]['id']];
+                    } else {
+                        $temp['m3'] = -1;
+                    }
+                    $temp['m1_color'] = $att->getTDClass($temp['m1']);
+                    $temp['m2_color'] = $att->getTDClass($temp['m2']);
+                    $temp['m3_color'] = $att->getTDClass($temp['m3']);
+                    // update statistics
+                    $totalAll++;
+                    if($temp['att'] == 10) {
+                        $totalLog++;
+                    }
+                    if($memberList[$rowIdx]['state'] < 3) {
+                        $normalAll++;
+                        if($temp['att'] == 10) {
+                            $normalLog++;
+                        }
+                    } else if($memberList[$rowIdx]['state'] == 3) {
+                        $newbieAll++;
+                        if($temp['att'] == 10) {
+                            $newbieLog++;
+                        }
+                    }
+                    array_push($attData, $temp);
+                }
+                $stat = array('tot'=>$totalAll, 'tot_log'=>$totalLog, 'nor'=>$normalAll, 'nor_log'=>$normalLog, 'new'=>$newbieAll, 'new_log'=>$newbieLog);
+                if(count($memberList) > 0) {
+                    return $view->render($response, 'part_attendence_log.twig', ['result'=>'success', 'stat'=>$stat, 'month_label'=>$monthLabel, 'att_data'=>$attData, 'part_num'=>$partNum, 'date'=>$args['date'], 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                } else {
+                    return $view->render($response, 'part_attendence_log.twig', ['result'=>'fail', 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                }
+            } else {
+                $title = '출석 입력';
+                $message = '오늘은 출석 입력일이 아닙니다';
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'part_num'=>$loginPartNum, 'date'=>$args['date'], 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            }
+        } else {
+            $title = '출석 입력';
+            $message = '사용 권한 오류 - 다시 로그인 해 주세요';
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'part_num'=>$loginPartNum, 'date'=>$args['date'], 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+        }
+        
+    })->setName('att_log');
+
+    //  ## attendence log
+    $app->post('/attendences/logs/parts/{part_num}/members/123456/{date}/edit', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        require_once __DIR__ . '/src/models/Functions.php';
+        $partNum = $args['part_num'];
+        $date = $args['date'];
+        $entryDate = Functions::getFormatDate($date);
+        
+        if(isset($_POST['update'])) {
+            $att = array();
+            $late = array();
+            $id = $_POST['id'];
+            $attInTemp = $_POST['att'];
+            $lateInTemp = $_POST['late'];
+            for($idx=0; $idx<count($attInTemp); $idx++){
+                if($attInTemp[$idx]=='off'){
+                    //
+                } else {
+                    array_pop($att);
+                }
+                array_push($att, $attInTemp[$idx]);
+            }
+            for($idx=0; $idx<count($lateInTemp); $idx++){
+                if($lateInTemp[$idx]=='off'){
+                    //
+                } else {
+                    array_pop($late);
+                }
+                array_push($late, $lateInTemp[$idx]);
+            }
+
+            require_once __DIR__ . '/src/models/Attendence.php';
+            $attModel = new Attendence();
+            $result = $attModel->updateAttLog($partNum, $entryDate, $id, $att, $late);
+            if(count($id) == count($result)) {
+                return $response->withHeader('Location', '/calvary-web-2/attendences/logs/parts/'.$partNum.'/members/123456/'.$date)->withStatus(302);
+            } else {
+                $title = '출석 입력';
+                $message = '출석 입력 실패 - 확인 후 다시 시도해 주세요';
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            }
+        } else {
+            // do nothing, redirecto attendence log form
+            return $response->withHeader('Location', '/calvary-web-2/attendences/logs/parts/'.$partNum.'/members/123456/'.$date)->withStatus(302);
+        }
+        
+        
+    })->setName('att_log_edit');
 
     $app->run();

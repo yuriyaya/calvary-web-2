@@ -43,6 +43,27 @@
                 case 'admin':
                     $ret = "관리자";
                     break;
+                case 'sopa':
+                    $ret = "소프라노A";
+                    break;
+                case 'sopb':
+                    $ret = "소프라노B";
+                    break;
+                case 'sopbp':
+                    $ret = "소프라노B+";
+                    break;
+                case 'altoa':
+                    $ret = "알토A";
+                    break;
+                case 'altob':
+                    $ret = "알토B";
+                    break;
+                case 'tenor':
+                    $ret = "테너";
+                    break;
+                case 'bass':
+                    $ret = "베이스";
+                    break;
                 default:
                     $ret = '';
                     break;
