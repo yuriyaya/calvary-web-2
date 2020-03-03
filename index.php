@@ -471,7 +471,7 @@
 
     // ### part
     //  ## attendence log
-    $app->get('/attendences/logs/parts/{part_num}/members/123456/{date}', function ($request, $response, $args) {
+    $app->get('/attendences/logs/parts/{part_num}/members/123456/date/{date}', function ($request, $response, $args) {
         $view = Twig::fromRequest($request);
 
         require_once __DIR__ . '/src/models/Functions.php';
@@ -578,25 +578,25 @@
                 }
                 $stat = array('tot'=>$totalAll, 'tot_log'=>$totalLog, 'nor'=>$normalAll, 'nor_log'=>$normalLog, 'new'=>$newbieAll, 'new_log'=>$newbieLog);
                 if(count($memberList) > 0) {
-                    return $view->render($response, 'part_attendence_log.twig', ['result'=>'success', 'stat'=>$stat, 'month_label'=>$monthLabel, 'att_data'=>$attData, 'part_num'=>$partNum, 'date'=>$args['date'], 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                    return $view->render($response, 'part_attendence_log.twig', ['result'=>'success', 'stat'=>$stat, 'month_label'=>$monthLabel, 'att_data'=>$attData, 'part_num'=>$partNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
                 } else {
                     return $view->render($response, 'part_attendence_log.twig', ['result'=>'fail', 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
                 }
             } else {
                 $title = '출석 입력';
                 $message = '오늘은 출석 입력일이 아닙니다';
-                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'part_num'=>$loginPartNum, 'date'=>$args['date'], 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'part_num'=>$loginPartNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
             }
         } else {
             $title = '출석 입력';
             $message = '사용 권한 오류 - 다시 로그인 해 주세요';
-            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'part_num'=>$loginPartNum, 'date'=>$args['date'], 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'part_num'=>$loginPartNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
         }
         
     })->setName('att_log');
 
-    //  ## attendence log
-    $app->post('/attendences/logs/parts/{part_num}/members/123456/{date}/edit', function ($request, $response, $args) {
+    //  ## attendence log update
+    $app->post('/attendences/logs/parts/{part_num}/members/123456/date/{date}/edit', function ($request, $response, $args) {
         $view = Twig::fromRequest($request);
 
         require_once __DIR__ . '/src/models/Functions.php';
@@ -631,7 +631,7 @@
             $attModel = new Attendence();
             $result = $attModel->updateAttLog($partNum, $entryDate, $id, $att, $late);
             if(count($id) == count($result)) {
-                return $response->withHeader('Location', '/calvary-web-2/attendences/logs/parts/'.$partNum.'/members/123456/'.$date)->withStatus(302);
+                return $response->withHeader('Location', '/calvary-web-2/attendences/logs/parts/'.$partNum.'/members/123456/date/'.$date)->withStatus(302);
             } else {
                 $title = '출석 입력';
                 $message = '출석 입력 실패 - 확인 후 다시 시도해 주세요';
@@ -642,7 +642,53 @@
             return $response->withHeader('Location', '/calvary-web-2/attendences/logs/parts/'.$partNum.'/members/123456/'.$date)->withStatus(302);
         }
         
-        
     })->setName('att_log_edit');
+
+    //  ## attendence log date select form
+    $app->get('/attendences/logs/parts/{part_num}/members/123456/date', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        $partNum = $args['part_num'];
+        return $view->render($response, 'part_attendence_log_date.twig', ['result'=>'success', 'part_num'=>$partNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+
+        })->setName('att_log_date');
+
+    //  ## attendence log date select form
+    $app->post('/attendences/logs/parts/{part_num}/members/123456/date/search', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        if(isset($_POST['edit'])) {
+            $partNum = $args['part_num'];
+            $entryDate = $_POST['date'];
+            $date = date('Ymd', strtotime($_POST['date']));
+            require_once __DIR__ . '/src/models/Part.php';
+            $loginPartNum = Part::getPartNumberByLoginId($_SESSION['userID']);
+
+            $dateLimit = date("Y-m-d", strtotime("-2 months"));
+            if(strtotime($entryDate) > strtotime($dateLimit)) {
+                if($partNum == $loginPartNum) {
+                    require_once __DIR__ . '/src/models/EntryDate.php';
+                    $ed = new EntryDate();
+                    $edCheck = $ed->checkEntryDate($entryDate);
+                    if($edCheck) {
+                        // redirect page
+                        return $response->withHeader('Location', '/calvary-web-2/attendences/logs/parts/'.$partNum.'/members/123456/date/'.$date)->withStatus(302);
+                    } else {
+                        return $view->render($response, 'part_attendence_log_date.twig', ['result'=>'fail', 'part_num'=>$partNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                    }
+                } else {
+                    $title = '출석 수정';
+                    $message = '사용 권한 오류 - 다시 로그인 해 주세요';
+                    return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'part_num'=>$loginPartNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                }
+            } else {
+                return $view->render($response, 'part_attendence_log_date.twig', ['result'=>'fail', 'part_num'=>$partNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            }
+
+        } else {
+            return $response->withHeader('Location', '/calvary-web-2/attendences/logs/parts/'.$partNum.'/members/123456/date')->withStatus(302);
+        }
+
+    })->setName('att_log_date_search');
 
     $app->run();

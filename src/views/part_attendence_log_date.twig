@@ -1,0 +1,26 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">출석 수정</div>
+    {% if result == 'fail' %}
+    <div class="alert alert-danger">
+        <strong>에러!</strong> 출석 수정 가능한 날짜가 아닙니다.
+    </div>
+    {% endif %}
+    <form action="/calvary-web-2/attendences/logs/parts/{{ part_num }}/members/123456/date/search" method="post">
+        <table class="form-table">
+            <tr>
+                <td>출석일: </td>
+                <td><input type="date" name="date" value="{{ "now"|date("Y-m-d") }}"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit" class="btn btn-primary" name="edit">수정</button></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

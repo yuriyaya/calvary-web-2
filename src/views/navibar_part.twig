@@ -11,8 +11,8 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="partMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">파트</a>
                 <div class="dropdown-menu" aria-labelledby="partMenu">
-                    <a class="dropdown-item" href="/calvary-web-2/attendences/logs/parts/{{ part_num }}/members/123456/{{ date }}">출석 입력</a>
-                    <a class="dropdown-item" href="#">출석 수정</a>
+                    <a class="dropdown-item" href="/calvary-web-2/attendences/logs/parts/{{ part_num }}/members/123456/date/{{ "now"|date("Ymd") }}">출석 입력</a>
+                    <a class="dropdown-item" href="/calvary-web-2/attendences/logs/parts/{{ part_num }}/members/123456/date">출석 수정</a>
                     <a class="dropdown-item" href="#">대원 상태 변경</a>
                     <a class="dropdown-item" href="#">-----</a>
                     <a class="dropdown-item" href="#">월별 출석 통계</a>
