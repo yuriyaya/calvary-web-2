@@ -469,6 +469,52 @@
         
     })->setName('entrydate_id_delete');
 
+    //  ## admin attendence log edit
+    $app->get('/attendences/logs/parts', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        require_once __DIR__ . '/src/models/Part.php';
+        if($_SESSION['userID'] == 'admin') {
+            return $view->render($response, 'attendence_log_part_date.twig', ['result'=>'success', 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+        } else {
+            return $view->render($response, 'attendence_log_part_date.twig', ['result'=>'fail', 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+        }
+
+    })->setName('att_log_part_date');
+
+    //  ## attendence log part/date select form
+    $app->post('/attendences/logs/parts/search', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        if(isset($_POST['edit'])) {
+            $partNum = $_POST['part'];
+            $entryDate = $_POST['date'];
+            $date = date('Ymd', strtotime($_POST['date']));
+            require_once __DIR__ . '/src/models/Part.php';
+            $loginPartNum = Part::getPartNumberByLoginId($_SESSION['userID']);
+            
+            if($_SESSION['userID'] == 'admin') {
+                require_once __DIR__ . '/src/models/EntryDate.php';
+                $ed = new EntryDate();
+                $edCheck = $ed->checkEntryDate($entryDate);
+                if($edCheck) {
+                    // redirect page
+                    return $response->withHeader('Location', '/calvary-web-2/attendences/logs/parts/'.$partNum.'/members/123456/date/'.$date)->withStatus(302);
+                } else {
+                    return $view->render($response, 'attendence_log_part_date.twig', ['result'=>'fail', 'part_num'=>$partNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+                }
+            } else {
+                $title = '출석 수정';
+                $message = '사용 권한 오류 - 사용 불가능한 기능입니다';
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'part_num'=>$loginPartNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            }
+
+        } else {
+            return $response->withHeader('Location', '/attendences/logs/parts')->withStatus(302);
+        }
+
+    })->setName('att_log_date_search');
+
     // ### part
     //  ## attendence log
     $app->get('/attendences/logs/parts/{part_num}/members/123456/date/{date}', function ($request, $response, $args) {
@@ -480,7 +526,7 @@
         require_once __DIR__ . '/src/models/Part.php';
         $loginPartNum = Part::getPartNumberByLoginId($_SESSION['userID']);
 
-        if($partNum == $loginPartNum) {
+        if(($partNum == $loginPartNum) || ($_SESSION['userID'] == 'admin')) {
 
             require_once __DIR__ . '/src/models/EntryDate.php';
             $ed = new EntryDate();
@@ -651,7 +697,7 @@
         $partNum = $args['part_num'];
         return $view->render($response, 'part_attendence_log_date.twig', ['result'=>'success', 'part_num'=>$partNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
 
-        })->setName('att_log_date');
+    })->setName('att_log_date');
 
     //  ## attendence log date select form
     $app->post('/attendences/logs/parts/{part_num}/members/123456/date/search', function ($request, $response, $args) {
@@ -678,7 +724,7 @@
                     }
                 } else {
                     $title = '출석 수정';
-                    $message = '사용 권한 오류 - 다시 로그인 해 주세요';
+                    $message = '사용 권한 오류 - 사용 불가능한 기능입니다';
                     return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'part_num'=>$loginPartNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
                 }
             } else {
