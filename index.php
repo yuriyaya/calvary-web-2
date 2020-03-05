@@ -737,4 +737,134 @@
 
     })->setName('att_log_date_search');
 
+    //  ## part member state change
+    $app->get('/attendences/logs/parts/{part_num}/members/states', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        $partNum = $args['part_num'];
+        require_once __DIR__ . '/src/models/Part.php';
+        $loginPartNum = Part::getPartNumberByLoginId($_SESSION['userID']);
+
+        if($partNum == $loginPartNum) {
+            
+            $attData = array();
+
+            require_once __DIR__ . '/src/models/MemberState.php';
+            require_once __DIR__ . '/src/models/Attendence.php';
+            $part = new Part($partNum);
+            $entryDate = date('Y-m-d');
+            $memberList = $part->getPartAttendenceMemberList($entryDate);
+            $att = new Attendence();
+            $attLog = $att->getAttLog($partNum, $entryDate);
+
+            $timestamp = strtotime($entryDate);
+            $m1Timestamp = strtotime(date('Y-m-01', $timestamp).' -1 months');
+            $m2Timestamp = strtotime(date('Y-m-01', $timestamp).' -2 months');
+            $m3Timestamp = strtotime(date('Y-m-01', $timestamp).' -3 months');
+            $m1 = date('Y-m-d', $m1Timestamp);
+            $m2 = date('Y-m-d', $m2Timestamp);
+            $m3 = date('Y-m-d', $m3Timestamp);
+            $m1Label = date('n', $m1Timestamp);
+            $m2Label = date('n', $m2Timestamp);
+            $m3Label = date('n', $m3Timestamp);
+
+            $attM1Log = $att->getMonthAttLog($partNum, $m1);
+            $attM2Log = $att->getMonthAttLog($partNum, $m2);
+            $attM3Log = $att->getMonthAttLog($partNum, $m3);
+            $monthLabel = array($m1Label, $m2Label, $m3Label);
+
+            for($rowIdx=0; $rowIdx<count($memberList); $rowIdx++) {
+                $temp['id'] = $memberList[$rowIdx]['id'];
+                $temp['name'] = $memberList[$rowIdx]['name'];
+                if($rowIdx == 0) {
+                    $temp['state'] = '파트장';
+                } else {
+                    if($memberList[$rowIdx]['state'] < 3) {
+                        $temp['state'] = '';
+                    } else {
+                        $temp['state'] = MemberState::getMemberStateName($memberList[$rowIdx]['state']);
+                    }
+                }
+                $temp['state_num'] = $memberList[$rowIdx]['state'];
+                
+                // 3 month attendence log
+                if(array_key_exists($memberList[$rowIdx]['id'], $attM1Log)) {
+                    $temp['m1'] = $attM1Log[$memberList[$rowIdx]['id']];
+                } else {
+                    $temp['m1'] = -1;
+                }
+                if(array_key_exists($memberList[$rowIdx]['id'], $attM2Log)) {
+                    $temp['m2'] = $attM2Log[$memberList[$rowIdx]['id']];
+                } else {
+                    $temp['m2'] = -1;
+                }
+                if(array_key_exists($memberList[$rowIdx]['id'], $attM3Log)) {
+                    $temp['m3'] = $attM3Log[$memberList[$rowIdx]['id']];
+                } else {
+                    $temp['m3'] = -1;
+                }
+                $temp['m1_color'] = $att->getTDClass($temp['m1']);
+                $temp['m2_color'] = $att->getTDClass($temp['m2']);
+                $temp['m3_color'] = $att->getTDClass($temp['m3']);
+                
+                array_push($attData, $temp);
+            }
+            if(count($memberList) > 0) {
+                return $view->render($response, 'part_member_state.twig', ['result'=>'success', 'month_label'=>$monthLabel, 'att_data'=>$attData, 'part_num'=>$partNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            } else {
+                return $view->render($response, 'part_member_state.twig', ['result'=>'fail', 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            }
+        } else {
+            $title = '출석 입력';
+            $message = '사용 권한 오류 - 다시 로그인 해 주세요';
+            return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'part_num'=>$loginPartNum, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+        }
+        
+    })->setName('part_member_state');
+
+    //  ## attendence log update
+    $app->post('/attendences/logs/parts/{part_num}/members/states/edit', function ($request, $response, $args) {
+        $view = Twig::fromRequest($request);
+
+        $partNum = $args['part_num'];
+        $entryDate = date('Y-m-d');
+        
+        if(isset($_POST['update'])) {
+            
+            $id = $_POST['id'];
+            $state = $_POST['state'];
+            $stateUp = $_POST['state_up'];
+
+            print_r($id).'<br>';
+            print_r($state).'<br>';
+            print_r($stateUp).'<br>';
+
+            $result = true;
+            for($idx=0; $idx<count($id); $idx++){
+                if($stateUp[$idx] != 0) {
+                    if($state[$idx] != $stateUp[$idx]) {
+    
+                        require_once __DIR__ . '/src/models/MemberState.php';
+                        $memberStateModel = new MemberState();
+                        $result = $memberStateModel->addMemberState($id[$idx], $entryDate, $stateUp[$idx]);
+                        if(!$result) {
+                            $result = false;
+                        }
+                    }
+                }
+            }
+
+            if($result) {
+                return $response->withHeader('Location', '/calvary-web-2/attendences/logs/parts/'.$partNum.'/members/states')->withStatus(302);
+            } else {
+                $title = '대원 상태 변경';
+                $message = '대원 상태 변경 실패 - 확인 후 다시 시도해 주세요';
+                return $view->render($response, 'result_error.twig', ['title'=>$title, 'message'=>$message, 'login_id'=>$_SESSION['userID'], 'login_name'=>Login::getLoginName($_SESSION['userID'])]);
+            }
+        } else {
+            return $response->withHeader('Location', '/calvary-web-2/attendences/logs/parts/'.$partNum.'/members/states')->withStatus(302);
+        }
+        
+    })->setName('part_member_state_edit');
+
     $app->run();

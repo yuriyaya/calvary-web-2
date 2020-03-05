@@ -1,0 +1,52 @@
+{% extends 'main_layout.twig' %}
+
+{% block navibar %}
+    {{ include('navibar.twig') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-title bg-secondary text-white">대원 상태 변경</div>
+    {% if result == 'fail' %}
+    <div class="alert alert-danger">
+        <strong>에러!</strong>
+    </div>
+    {% endif %}
+    {% if result == 'success' %}
+    <form action="/calvary-web-2/attendences/logs/parts/{{ part_num }}/members/states/edit" method="post">
+    <table class="att-log form-table table table-bordered table-hover table-sm">
+        <thead class="thead-dark">
+            <th>이름</th>
+            <th>상태</th>
+            {% for label in month_label %}
+                <th>{{ label }}월</th>
+            {% endfor %}
+            <th>변경상태</th>
+        </thead>
+        <tbody>
+        {% for row in att_data %}
+            <tr>
+                <td>{{ row.name }}<input type="hidden" name="id[]" value="{{ row.id }}"></td>
+                <td>{{ row.state }}<input type="hidden" name="state[]" value="{{ row.state_num }}"></td>
+                <td class="{{ row.m1_color }}">{% if row.m1 >= 0 %}{{ row.m1 }}%{% else %}-%{% endif %}</td>
+                <td class="{{ row.m2_color }}">{% if row.m2 >= 0 %}{{ row.m2 }}%{% else %}-%{% endif %}</td>
+                <td class="{{ row.m3_color }}">{% if row.m3 >= 0 %}{{ row.m3 }}%{% else %}-%{% endif %}</td>
+                <td><select class="form-control" id="state" name="state_up[]">
+                    <option value="0" selected>선택</option>
+                    <option value="1">정대원</option>
+                    <option value="2">솔리스트</option>
+                    <option value="3">신입</option>
+                    <option value="4">임시</option>
+                    <option value="5">특별</option>
+                    <option value="6">휴식</option>
+                    <option value="7">제적</option>
+                    <option value="8">은퇴</option>
+                    <option value="9">명예</option>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary" name="update">상태 변경</button>
+    </form>
+    {% endif %}
+{% endblock %}
